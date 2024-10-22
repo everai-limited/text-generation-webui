@@ -30,6 +30,27 @@ from modules.html_generator import generate_basic_html
 from modules.logging_colors import logger
 from modules.models import clear_torch_cache, load_model
 
+def log_conversation(question, reply, state):
+
+    """
+
+    Log the entire conversation with formatting.
+
+    """
+
+    conversation = {
+
+        "question": question,
+
+        "reply": reply,
+
+        "state": state
+
+    }
+
+    formatted_conversation = json.dumps(conversation, indent=2)
+
+    logger.debug(f"Conversation:\n{formatted_conversation}")
 
 def generate_reply(*args, **kwargs):
     if shared.args.idle_timeout > 0 and shared.model is None and shared.model_name not in [None, 'None']:
@@ -422,6 +443,7 @@ def generate_reply_HF(question, original_question, seed, state, stopping_strings
         t1 = time.time()
         original_tokens = len(original_input_ids[0])
         new_tokens = len(output) - (original_tokens if not shared.is_seq2seq else 0)
+        log_conversation(question, reply, state)
         print(f'Output generated in {(t1-t0):.2f} seconds ({new_tokens/(t1-t0):.2f} tokens/s, {new_tokens} tokens, context {original_tokens}, seed {seed})')
         return
 
@@ -451,6 +473,7 @@ def generate_reply_custom(question, original_question, seed, state, stopping_str
         t1 = time.time()
         original_tokens = len(encode(original_question)[0])
         new_tokens = len(encode(original_question + reply)[0]) - original_tokens
+        log_conversation(question, reply, state)
         print(f'Output generated in {(t1-t0):.2f} seconds ({new_tokens/(t1-t0):.2f} tokens/s, {new_tokens} tokens, context {original_tokens}, seed {seed})')
         return
 
