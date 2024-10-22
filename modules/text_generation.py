@@ -5,7 +5,7 @@ import pprint
 import random
 import time
 import traceback
-
+import json 
 import numpy as np
 import torch
 import transformers
@@ -31,26 +31,13 @@ from modules.logging_colors import logger
 from modules.models import clear_torch_cache, load_model
 
 def log_conversation(question, reply, state):
-
-    """
-
-    Log the entire conversation with formatting.
-
-    """
-
-    conversation = {
-
-        "question": question,
-
-        "reply": reply,
-
-        "state": state
-
-    }
-
-    formatted_conversation = json.dumps(conversation, indent=2)
-
-    logger.debug(f"Conversation:\n{formatted_conversation}")
+    conversation = {
+        "question": question,
+        "reply": reply,
+        "state": state
+        }
+    formatted_conversation = json.dumps(conversation, indent=2)
+    print(f"Conversation:\n{formatted_conversation}")
 
 def generate_reply(*args, **kwargs):
     if shared.args.idle_timeout > 0 and shared.model is None and shared.model_name not in [None, 'None']:
