@@ -396,7 +396,8 @@ def generate_reply_HF(question, original_question, seed, state, stopping_strings
     t0 = time.time()
     try:
         if not is_chat and not shared.is_seq2seq:
-            yield ''
+            reply = ''
+            yield reply
 
         # Generate the entire reply at once.
         if not state['stream']:
@@ -406,7 +407,8 @@ def generate_reply_HF(question, original_question, seed, state, stopping_strings
                     output = output.cuda()
 
             starting_from = 0 if shared.is_seq2seq else len(input_ids[0])
-            yield get_reply_from_output_ids(output, state, starting_from=starting_from)
+            reply = get_reply_from_output_ids(output, state, starting_from=starting_from)
+            yield reply
 
         # Stream the reply 1 token at a time.
         # This is based on the trick of using 'stopping_criteria' to create an iterator.
@@ -435,13 +437,15 @@ def generate_reply_HF(question, original_question, seed, state, stopping_strings
 
                     cumulative_reply += new_content
                     starting_from = len(output)
-                    yield cumulative_reply
+                    reply = cumulative_reply
+                    yield reply
 
     except Exception:
         traceback.print_exc()
     finally:
         t1 = time.time()
         original_tokens = len(original_input_ids[0])
+        log_conversation(question, reply, state)
         new_tokens = len(output) - (original_tokens if not shared.is_seq2seq else 0)
         log_conversation(question, reply, state)
         print(f'Output generated in {(t1-t0):.2f} seconds ({new_tokens/(t1-t0):.2f} tokens/s, {new_tokens} tokens, context {original_tokens}, seed {seed})')
