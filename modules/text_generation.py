@@ -296,6 +296,7 @@ def get_reply_from_output_ids(output_ids, state=None, starting_from=0):
 
 
 def generate_reply_HF(question, original_question, seed, state, stopping_strings=None, is_chat=False):
+    print('generate_reply_HF')
     generate_params = {}
     for k in ['max_new_tokens', 'temperature', 'temperature_last', 'dynamic_temperature', 'dynatemp_low', 'dynatemp_high', 'dynatemp_exponent', 'smoothing_factor', 'smoothing_curve', 'top_p', 'min_p', 'top_k', 'repetition_penalty', 'presence_penalty', 'frequency_penalty', 'repetition_penalty_range', 'typical_p', 'tfs', 'top_a', 'guidance_scale', 'penalty_alpha', 'mirostat_mode', 'mirostat_tau', 'mirostat_eta', 'do_sample', 'encoder_repetition_penalty', 'no_repeat_ngram_size', 'dry_multiplier', 'dry_base', 'dry_allowed_length', 'dry_sequence_breakers', 'xtc_threshold', 'xtc_probability']:
         if k in state:
@@ -440,6 +441,7 @@ def generate_reply_HF(question, original_question, seed, state, stopping_strings
 
 
 def generate_reply_custom(question, original_question, seed, state, stopping_strings=None, is_chat=False):
+    print("generate_reply_custom")
     """
     For models that do not use the transformers library for sampling
     """
