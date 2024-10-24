@@ -192,8 +192,8 @@ def generate_chat_prompt(user_input, state, **kwargs):
         prompt = remove_extra_bos(prompt)
         return prompt
 
-    prompt = make_prompt(messages)
-
+    #prompt = make_prompt(messages)
+    prompt = shared.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt = True)
     # Handle truncation
     if shared.tokenizer is not None:
         max_length = get_max_prompt_length(state)
