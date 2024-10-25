@@ -192,8 +192,16 @@ def generate_chat_prompt(user_input, state, **kwargs):
         prompt = remove_extra_bos(prompt)
         return prompt
 
+    for message in messages:
+        if message['role'] == 'user':
+            message['content'] = f"{state['name1']}: {message['content']}"
+        elif message['role'] == 'assistant':
+            message['content'] = f"{state['name2']}: {message['content']}"
+
     #prompt = make_prompt(messages)
     prompt = shared.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt = True)
+    prompt = f"{prompt}{state['name2']}: "
+
     # Handle truncation
     if shared.tokenizer is not None:
         max_length = get_max_prompt_length(state)
